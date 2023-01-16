@@ -34,9 +34,10 @@ describe('API', () => {
                 .get("/api/topics")
                 .expect(200)
                 .then(({ body }) => {
+                    expect(body.topics.length).toBe(testData.topicData.length);
                     body.topics.forEach((topic) => {
-                        expect(topic).toHaveProperty("slug");
-                        expect(topic).toHaveProperty("description");
+                        expect(topic).toHaveProperty("slug", expect.anything("string"));
+                        expect(topic).toHaveProperty("description", expect.anything("string"));
                     });
                 });
         });
@@ -51,7 +52,7 @@ describe('API', () => {
                     expect(topTopic.description).toBe("The man, the Mitch, the legend");
             });
         });
-        test('Status 404 - returns back Error: cannot GET /api/topicss (404)', () => {
+        test.only('Status 404 - returns back Error: cannot GET /api/topicss (404)', () => {
             return request(app)
                 .get("/api/topicss")
                 .expect(404);
