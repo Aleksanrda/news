@@ -52,7 +52,7 @@ describe('API', () => {
                     expect(topTopic.description).toBe("The man, the Mitch, the legend");
             });
         });
-        test.only('Status 404 - returns back Error: cannot GET /api/topicss (404)', () => {
+        test('Status 404 - returns back Error: cannot GET /api/topicss (404)', () => {
             return request(app)
                 .get("/api/topicss")
                 .expect(404);
