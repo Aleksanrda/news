@@ -5,6 +5,9 @@ const getTopics = (request, response) => {
         .then(({ rows: results}) => {
             response.status(200).send({ topics: results });
         })
+        .catch((err) => {
+            next(err);
+        });
 }
 
 module.exports = { getTopics };
