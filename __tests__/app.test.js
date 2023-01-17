@@ -15,7 +15,7 @@ afterAll(() => {
 });
 
 describe('API', () => {
-    describe('/api/topics', () => {
+    describe('/API/TOPICS', () => {
         test('Status 200 - api point exists and responds', () => {
             return request(app).get("/api/topics").expect(200);
         });
@@ -62,7 +62,7 @@ describe('API', () => {
                 });
         });
     });
-    describe('/api/articles/:article_id', () => {
+    describe('/API/ARTICLES/:ARTTICLE_ID', () => {
         test('Status 200 - api point exists and responds', () => {
             return request(app).get("/api/articles/1").expect(200);
         });
@@ -84,7 +84,7 @@ describe('API', () => {
                     expect(body.articles).toHaveLength(1);
                     
                     const article = body.articles[0];
-            
+                                       
                     expect(article).toHaveProperty("article_id", expect.any(Number));
                     expect(article).toHaveProperty("title", expect.any(String));
                     expect(article).toHaveProperty("topic", expect.any(String));
@@ -113,6 +113,22 @@ describe('API', () => {
                     expect(article.created_at).toBe("2020-07-09T20:11:00.000Z");
                     expect(article.votes).toBe(100);
                     expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+                })
+        });
+        test('Status 404 - returns back an error Article Not Found', () => {
+            return request(app)
+                .get("/api/articles/1000")
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Article with id 1000 Not Found");
+                })
+        });
+        test('Status 400 - returns back an error Invalid input', () => {
+            return request(app)
+                .get("/api/articles/notAnId")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("You passed notAnId. Article id should be a number.");
                 })
         });
     });
