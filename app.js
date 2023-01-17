@@ -1,7 +1,10 @@
 const express = require("express");
 const app = express();
 
+const { getTopics } = require("./controllers/topic.controllers.js");
 const { getArticles } = require("./controllers/article.controllers.js");
+
+app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
 
