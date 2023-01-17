@@ -52,10 +52,13 @@ describe('API', () => {
                     expect(topTopic.description).toBe("The man, the Mitch, the legend");
             });
         });
-        test('Status 404 - returns back Error: cannot GET /api/topicss (404)', () => {
+        test('Status 404 - returns back error Path not found', () => {
             return request(app)
                 .get("/api/topicss")
-                .expect(404);
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Path not found");
+                });
         });
     });
 });
