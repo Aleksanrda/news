@@ -133,7 +133,7 @@ describe('API', () => {
                 })
         });
     });
-});    
+
     describe('/API/ARTICLES', () => {
         test('Status 200 - api point exists and responds', () => {
             return request(app).get("/api/articles").expect(200);
@@ -145,7 +145,9 @@ describe('API', () => {
                 .then(({ body }) => {
                     expect(body).toBeInstanceOf(Object);
                     expect(body).toHaveProperty("articles");
-                    expect(body.articles).toBeInstanceOf(Array);    
+                    expect(body.articles).toBeInstanceOf(Array);
+                });  
+        });  
         test('Status 200 - returns back an array of objects with the correct keys', () => {
             return request(app)
                 .get("/api/articles")
@@ -180,6 +182,69 @@ describe('API', () => {
                 .then(({ body }) => {
                     expect(body.msg).toBe("Path not found");
                 });
+        });
+    });
+    describe('POST /API/ARTICLES/:ARTICLE_ID/COMMENTS', () => {
+        test('Status 201 - api point exists and returns', () => {
+            return request(app)
+            .post("/api/articles/1/comments")
+            .send({
+                "body": "This morning, I ate a banana.",
+                "username": "lurker",
+            })
+            .expect(201);
+        });
+        test('Status 201 - returns back an object and has a property called comment', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .send({
+                    "body": "This morning, I ate a banana.",
+                    "username": "lurker",
+                })
+                .expect(201)
+                .then(( { body }) => {
+                    expect(body).toBeInstanceOf(Object);
+                    expect(body).toHaveProperty("comment");
+                    expect(body.comment).toBeInstanceOf(Array);
+                })
+        });
+        test('Status 201 - returns back an array of objects with length = 1 and correct keys', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .expect(201)
+                .send({
+                    "body": "This morning, I ate a banana.",
+                    "username": "lurker",
+                })
+                .then(({ body }) => {
+                    expect(body.comment).toHaveLength(1);
+                    
+                    const comment = body.comment[0];
+                                       
+                    expect(comment).toHaveProperty("comment_id", expect.any(Number));
+                    expect(comment).toHaveProperty("body", expect.any(String));
+                    expect(comment).toHaveProperty("article_id", expect.any(Number));
+                    expect(comment).toHaveProperty("author", expect.any(String));
+                    expect(comment).toHaveProperty("votes", expect.any(Number));
+                    expect(comment).toHaveProperty("created_at", expect.any(String));
+                });
+        });
+        test('Status 201 - returns back created comment', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .send({
+                    "body": "This morning, I ate a coconut.",
+                    "username": "lurker",
+                })
+                .expect(201)
+                .then(({ body }) => {
+                    const comment = body.comment[0];
+
+                    expect(comment.body).toBe("This morning, I ate a coconut.");
+                    expect(comment.author).toBe("lurker");
+                    expect(comment.article_id).toBe(1);
+                    expect(comment.votes).toBe(0);
+                })
         });
     });
 });
