@@ -17,6 +17,12 @@ const fetchArticles = () => {
 };
 
 const fetchArticleById = (article_id) => {
+    if (!parseInt(article_id)) {
+        return Promise.reject({ 
+            status: 400,
+            msg: `You passed ${article_id}. Article id should be a number.` });
+    }
+    
     const selectArticleById = `
         SELECT * 
         FROM articles 
@@ -33,6 +39,6 @@ const fetchArticleById = (article_id) => {
                 return rows[0];
             }
         });
-};
+  };
 
 module.exports = { fetchArticles, fetchArticleById };
