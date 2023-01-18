@@ -22,7 +22,7 @@ const fetchArticleById = (article_id) => {
             status: 400,
             msg: `You passed ${article_id}. Article id should be a number.` });
     }
-    
+
     const selectArticleById = `
         SELECT * 
         FROM articles 
@@ -30,15 +30,15 @@ const fetchArticleById = (article_id) => {
         `;
 
     return db.query(selectArticleById, [article_id])
-        .then(({ rowCount, rows }) => {
-            if (rowCount === 0) {
-                return Promise.reject({ 
-                    status: 404, 
-                    msg: `Comment for article with id ${article_id} Not Found`});
-            } else {
-                return rows[0];
-            }
-        });
-  };
+    .then(({ rowCount, rows }) => {
+        if (rowCount === 0) {
+            return Promise.reject({ 
+                status: 404, 
+                msg: `Article with id ${article_id} Not Found`});
+        } else {
+            return rows[0];
+        }
+    });
+};
 
 module.exports = { fetchArticles, fetchArticleById };
