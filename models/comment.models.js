@@ -9,12 +9,12 @@ const fetchArticleComments = (article_id) => {
 
     const selectArticleCommentsQuery = `
     SELECT * FROM comments 
-    WHERE comments.article_id = $1;`;
+    WHERE comments.article_id = $1 
+    ORDER BY created_at desc;`;
 
     return db.query(selectArticleCommentsQuery, [article_id])
-        .then((results) => {
-            console.log(results);
-            return results;
+        .then(({ rows }) => {
+            return rows;
         })
 }
 

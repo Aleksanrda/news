@@ -154,12 +154,12 @@ describe('API', () => {
         });
         test('Status 200 - returns back an array of comments from DB', () => {
             const expectedTopComment = {
-                comment_id: 2,
-                body: 'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+                comment_id: 5,
+                body: 'I hate streaming noses',
                 article_id: 1,
-                author: 'butter_bridge',
-                votes: 14,
-                created_at: "2020-10-31T03:03:00.000Z"
+                author: 'icellusedkars',
+                votes: 0,
+                created_at: "2020-11-03T21:00:00.000Z"
               };
 
             return request(app)
@@ -169,6 +169,22 @@ describe('API', () => {
                     const topBody = body.comments[0];
 
                     expect(topBody).toEqual(expectedTopComment);
+                });
+        });
+        test('Status 200 - returns back an array of sorted comments in descending order', () => {
+            return request(app)
+                .get("/api/articles/1/comments")
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments).toBeSortedBy("created_at", { descending: true });
+                });
+        });
+        test('Status 200 - returns back an empty array of comments when article does not have any comments', () => {
+            return request(app)
+                .get("/api/articles/4/comments")
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.comments).toEqual([]);
                 });
         });
         test('Status 404 - returns back an error Comment for article with id 1000 Not Found', () => {

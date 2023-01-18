@@ -16,4 +16,23 @@ const fetchArticles = () => {
         });
 };
 
-module.exports = { fetchArticles }
+const fetchArticleById = (article_id) => {
+    const selectArticleById = `
+    SELECT * 
+    FROM articles 
+    WHERE article_id = $1;
+    `;
+
+    return db.query(selectArticleById, [article_id])
+        .then(({ rowCount, rows }) => {
+            if (rowCount === 0) {
+                return Promise.reject({ 
+                    status: 404, 
+                    msg: `Comment for article with id ${article_id} Not Found`});
+            } else {
+                return rows[0];
+            }
+        });
+};
+
+module.exports = { fetchArticles, fetchArticleById };

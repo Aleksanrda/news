@@ -5,8 +5,6 @@ const { getTopics } = require("./controllers/topic.controllers.js");
 const { getArticles } = require("./controllers/article.controllers.js");
 const { getArticleComments } = require("./controllers/comment.controllers.js");
 
-app.use(express.json());
-
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);

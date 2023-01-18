@@ -1,21 +1,14 @@
 const { fetchArticleComments } = require("../models/comment.models.js");
+const { fetchArticleById } = require("../models/article.models.js");
 
 const getArticleComments = (request, response, next) => {
     const { article_id } = request.params;
 
-    fetchArticleComments(article_id)
-        .then(({ rows: results, rowCount}) => {
-            if (rowCount === 0) {
-                console.log("404 error");
-                return Promise.reject({ status: 404, msg: `Comment for article with id ${article_id} Not Found` });
-            }
-            
-            response.status(200).send({ comments: results });
+    Promise.all([fetchArticleComments(article_id), fetchArticleById(article_id)])
+        .then(([comments]) => {            
+            response.status(200).send({ comments });
         })
-        .catch((err) => {
-            console.log("404 error");
-            next(err);
-        })
+        .catch(next);
 };
 
 module.exports = { getArticleComments };
