@@ -67,14 +67,14 @@ describe('API', () => {
         test('Status 200 - api point exists and responds', () => {
             return request(app).get("/api/articles/1").expect(200);
         });
-        test('Status 200 - returns back an object and has a property called articles', () => {
+        test('Status 200 - returns back an object and has a property called article', () => {
             return request(app)
                 .get("/api/articles/1")
                 .expect(200)
                 .then(( { body }) => {
                     expect(body).toBeInstanceOf(Object);
-                    expect(body).toHaveProperty("articles");
-                    expect(body.articles).toBeInstanceOf(Array);
+                    expect(body).toHaveProperty("article");
+                    expect(body.article).toBeInstanceOf(Object);
                 })
         });
         test('Status 200 - returns back an array of objects with length = 1 and correct keys', () => {
@@ -82,9 +82,7 @@ describe('API', () => {
                 .get("/api/articles/1")
                 .expect(200)
                 .then(({ body }) => {
-                    expect(body.articles).toHaveLength(1);
-                    
-                    const article = body.articles[0];
+                    const article = body.article;
                                        
                     expect(article).toHaveProperty("article_id", expect.any(Number));
                     expect(article).toHaveProperty("title", expect.any(String));
@@ -101,10 +99,7 @@ describe('API', () => {
                 .get("/api/articles/1")
                 .expect(200)
                 .then(({ body }) => {
-                    console.log(body);
-                    const article = body.articles[0];
-
-                    console.log(article);
+                    const article = body.article;
 
                     expect(article.article_id).toBe(1);
                     expect(article.title).toBe("Living in the shadow of a great man");
@@ -206,7 +201,7 @@ describe('API', () => {
                     expect(body).toBeInstanceOf(Object);
                     expect(body).toHaveProperty("comment");
                     expect(body.comment).toBeInstanceOf(Array);
-                })
+                });
         });
         test('Status 201 - returns back an array of objects with length = 1 and correct keys', () => {
             return request(app)
@@ -244,6 +239,52 @@ describe('API', () => {
                     expect(comment.author).toBe("lurker");
                     expect(comment.article_id).toBe(1);
                     expect(comment.votes).toBe(0);
+                });
+        });
+        test('Status 400 - returns back bad request', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .send({
+                    "username": "lurker"
+                })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad request!");
+                });
+        });
+        test('Status 400 - returns back bad request when username has a Number type', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .send({
+                    "username": 12345,
+                })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Username 12345 should have a string type.");
+                });
+        });
+        test('Status 400 - returns back bad request when body of comment has a Number type', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .send({
+                    "username": "lurker",
+                    "body": 12345,
+                })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Body of comment 12345 should have a string type");
+                });
+        });
+        test('Status 404 - returns back a bad request if user is absent in DB', () => {
+            return request(app)
+                .post("/api/articles/1/comments")
+                .send({
+                    "username": "Anna12345",
+                    "body": "Good day is today!",
+                })
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Username Anna12345 does not exist")
                 })
         });
     });

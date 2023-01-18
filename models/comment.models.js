@@ -1,6 +1,19 @@
 const db = require("../db/connection.js");
 
 const addComment = (article_id, comment) => {
+    if (!comment.body) {
+        return Promise.reject({ 
+            status: 400, 
+            msg: "Bad request!" 
+        });
+    }
+    if(typeof comment.body !== "string") {
+        return Promise.reject({
+            status: 400,
+            msg: `Body of comment ${comment.body} should have a string type`,
+        })
+    }
+
     const commentData = [
         comment.body,
         article_id,
@@ -14,8 +27,8 @@ const addComment = (article_id, comment) => {
         `;
     
     return db.query(insertArticleComment, commentData)
-        .then((results) => {
-            return results;
+        .then(({ rows }) => {
+            return rows;
         })
 };
 

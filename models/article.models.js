@@ -30,9 +30,15 @@ const fetchArticleById = (article_id) => {
         `;
 
     return db.query(selectArticleById, [article_id])
-      .then((results) => {
-        return results;
-      });
+    .then(({ rowCount, rows }) => {
+        if (rowCount === 0) {
+            return Promise.reject({ 
+                status: 404, 
+                msg: `Article with id ${article_id} Not Found`});
+        } else {
+            return rows[0];
+        }
+    });
   };
 
 module.exports = { fetchArticles, fetchArticleById };
