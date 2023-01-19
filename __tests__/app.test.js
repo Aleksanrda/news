@@ -271,6 +271,69 @@ describe('API', () => {
         });
     });
 
+    describe('GET /API/ARTICLES QUERIES', () => {
+        test('Status 200 - returns back an array of articles which have topic mitch', () => {
+            return request(app)
+                .get("/api/articles?topic=mitch")
+                .expect(200)
+                .then(({ body }) => {
+                    body.articles.forEach((article) => {
+                        expect(article.topic).toBe("mitch");
+                      });
+                })
+        });
+        test('Status 200 - returns back an array of articles which have topic cats', () => {
+            return request(app)
+                .get("/api/articles?topic=cats")
+                .expect(200)
+                .then(({ body }) => {
+                    body.articles.forEach((article) => {
+                        expect(article.topic).toBe("cats");
+                      });
+                })
+        });
+        test('Status 200 - returns back an array of sorted articles by votes', () => {
+            return request(app)
+                .get("/api/articles?sort_by=votes")
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.articles).toBeSortedBy("votes", { descending: true });
+                })
+        });
+        test('Status 200 - returns back an array of sorted articles by created_at', () => {
+            return request(app)
+                .get("/api/articles?order=asc")
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.articles).toBeSortedBy("created_at", { ascending: true });
+                })
+        });
+        test("Status 400 - Sends back error msg when invalid sort_by parameter is used", () => {
+            return request(app)
+              .get("/api/articles?sort_by=topicsssss")
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("Invalid sort query");
+              });
+        });
+        test("Status 400 - Sends back error msg when invalid order parameter is used", () => {
+            return request(app)
+              .get("/api/articles?order=bibabuu")
+              .expect(400)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("Invalid order query");
+              });
+        });
+        test("Status 404 - Sends back error msg when the value of topic does not exist in DB", () => {
+            return request(app)
+              .get("/api/articles?topic=123cats123")
+              .expect(404)
+              .then(({ body: { msg } }) => {
+                expect(msg).toBe("Articles were Not Found");
+              });
+        });
+    });
+
     describe('GET /API/USERS', () => {
         test('Status 200 - api point exists and responds', () => {
             return request(app).get("/api/users").expect(200);
