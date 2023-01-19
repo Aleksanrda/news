@@ -5,9 +5,11 @@ const { getTopics } = require("./controllers/topic.controllers.js");
 const { getArticles, getArticleById, patchArticle} = require("./controllers/article.controllers.js");
 const { getArticleComments, postArticleComment } = require("./controllers/comment.controllers.js");
 const { getUsers } = require("./controllers/user.controllers.js");
-
+const { getEndpoints } = require("./controllers/endpoint.controllers.js");
 
 app.use(express.json());
+
+app.get("/api", getEndpoints);
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
