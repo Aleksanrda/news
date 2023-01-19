@@ -1,18 +1,40 @@
 const db = require("../db/connection");
 
-const fetchArticles = () => {
-    const selectArticlesQuery = `
+const fetchArticles = (topic, sort_by, order) => {
+    const sortOption = sort_by ? sort_by : "created_at"
+    const currentOrder = order ? order : "desc";
+
+    const availableSortOptions = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', 'article_img_url'];
+    if (!availableSortOptions.includes(sortOption)) {
+        return Promise.reject({ status: 400, msg: 'Invalid sort query' });
+    }
+      
+    if (!['asc', 'desc'].includes(currentOrder)) {
+        return Promise.reject({ status: 400, msg: 'Invalid order query' });
+    }
+
+    let selectArticlesQuery = `
         SELECT a.author, a.title, a.article_id, a.topic, a.created_at,
         a.votes, a.article_img_url, COUNT(c.article_id) AS comment_count
         FROM articles a
         LEFT JOIN comments c
-        ON c.article_id = a.article_id 
-        GROUP BY a.article_id 
-        ORDER BY a.created_at DESC;`;
+        ON c.article_id = a.article_id`;
+
+    if (topic) {
+        selectArticlesQuery += ` WHERE a.topic = '${topic}'`;
+    }
+
+    selectArticlesQuery += ` GROUP BY a.article_id ORDER BY a.${sortOption} ${currentOrder};`;
 
     return db.query(selectArticlesQuery)
-        .then((results) => {
-            return results;
+        .then(({ rowCount, rows }) => {
+            if (rowCount === 0) {
+                return Promise.reject({ 
+                    status: 404, 
+                    msg: `Articles were Not Found`});
+            } else {
+                return rows;
+            }
         });
 };
 
