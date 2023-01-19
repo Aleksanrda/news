@@ -308,14 +308,6 @@ describe('API', () => {
                     expect(body.articles).toBeSortedBy("created_at", { ascending: true });
                 })
         });
-        test('Status 200 - returns back an empty array of articles when the value of topic does not exist in DB', () => {
-            return request(app)
-                .get("/api/articles?topic=Totoro")
-                .expect(200)
-                .then(({ body }) => {
-                    expect(body.articles).toEqual([]);
-                })
-        });
         test("Status 400 - Sends back error msg when invalid sort_by parameter is used", () => {
             return request(app)
               .get("/api/articles?sort_by=topicsssss")
@@ -332,12 +324,12 @@ describe('API', () => {
                 expect(msg).toBe("Invalid order query");
               });
         });
-        test("Status 400 - Sends back error msg when invalid topic parameter is used", () => {
+        test("Status 404 - Sends back error msg when the value of topic does not exist in DB", () => {
             return request(app)
               .get("/api/articles?topic=123cats123")
-              .expect(400)
+              .expect(404)
               .then(({ body: { msg } }) => {
-                expect(msg).toBe("Topic 123cats123 has incorrect format!");
+                expect(msg).toBe("Articles were Not Found");
               });
         });
     });

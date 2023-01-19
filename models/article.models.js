@@ -21,18 +21,20 @@ const fetchArticles = (topic, sort_by, order) => {
         ON C.article_id = A.article_id`;
 
     if (topic) {
-        if (!/^[a-z]{0,15}$/i.test(topic)) {
-            return Promise.reject({ status: 400, msg: `Topic ${topic} has incorrect format!` });
-        }
-        
         selectArticlesQuery += ` WHERE A.topic = '${topic}'`;
     }
 
     selectArticlesQuery += ` GROUP BY A.article_id ORDER BY A.${sortOption} ${currentOrder};`;
 
     return db.query(selectArticlesQuery)
-        .then((results) => {
-            return results;
+        .then(({ rowCount, rows }) => {
+            if (rowCount === 0) {
+                return Promise.reject({ 
+                    status: 404, 
+                    msg: `Articles were Not Found`});
+            } else {
+                return rows;
+            }
         });
 };
 
