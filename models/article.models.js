@@ -39,7 +39,8 @@ const fetchArticleById = (article_id) => {
             return rows[0];
         }
     });
-};
+  };
+
 
 const updateVotesProperty = (article_id, articleBody) => {
     if (!parseInt(article_id)) {
