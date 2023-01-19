@@ -270,4 +270,112 @@ describe('API', () => {
             })
         });
     });
+    describe('PATCH /API/ARTICLES/:ARTICLE_ID', () => {
+        test('Status 200 - api point exists and responds', () => {
+            return request(app)
+                .patch("/api/articles/1")
+                .send({
+                    "inc_votes": 1
+                })
+                .expect(200);
+        });
+        test('Status 200 - returns back an object and has a property called article', () => {
+            return request(app)
+                .patch("/api/articles/1")
+                .send({
+                    "inc_votes": 1,
+                })
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body).toBeInstanceOf(Object);
+                    expect(body).toHaveProperty("article");
+                    expect(body.article).toBeInstanceOf(Object);
+                });
+        });
+        test('Status 200 - returns back an article with the correct keys', () => {
+            return request(app)
+                .patch("/api/articles/1")
+                .send({
+                    "inc_votes": 1,
+                })
+                .expect(200)
+                .then(({ body }) => {
+                    const { article } = body;
+                    
+                    expect(article).toHaveProperty("article_id", expect.any(Number));
+                    expect(article).toHaveProperty("title", expect.any(String));
+                    expect(article).toHaveProperty("topic", expect.any(String));
+                    expect(article).toHaveProperty("author", expect.any(String));
+                    expect(article).toHaveProperty("body", expect.any(String));
+                    expect(article).toHaveProperty("created_at", expect.any(String));
+                    expect(article).toHaveProperty("votes", expect.any(Number));
+                    expect(article).toHaveProperty("article_img_url", expect.any(String));
+                });
+        });
+        test('Status 200 - returns back an article with votes property icreased on 1', () => {   
+            return request(app)
+                .patch("/api/articles/1")
+                .send({
+                    "inc_votes": 1
+                })
+                .expect(200)
+                .then(({ body }) => {
+                    const { article } = body;
+    
+                    expect(article.votes).toBe(101);
+                });
+        });
+        test('Status 200 - returns back an article with votes property decreased on 10', () => {   
+            return request(app)
+                .patch("/api/articles/1")
+                .send({
+                    "inc_votes": -10
+                })
+                .expect(200)
+                .then(({ body }) => {
+                    const { article } = body;
+    
+                    expect(article.votes).toBe(90);
+                });
+        });
+        test('Status 400 - returns back bad request', () => {
+            return request(app)
+                .patch("/api/articles/1")
+                .send()
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Bad request!");
+                });
+        });
+        test('Status 400 - returns back bad request when inc_votes has a String type', () => {
+            return request(app)
+                .patch("/api/articles/1")
+                .send({
+                    "inc_votes": "123",
+                })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("inc_votes 123 property should have a number type");
+                });
+        });
+        test('Status 404 - returns back a bad request if article_id does not exist in DB', () => {
+            return request(app)
+                .patch("/api/articles/1000")
+                .send({
+                    "inc_votes": 1
+                })
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Article with id 1000 Not Found")
+                })
+        });
+        test('Status 400 - returns back an error Invalid input', () => {
+            return request(app)
+                .patch("/api/articles/notAnId")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("You passed notAnId. Article id should be a number.");
+                })
+        });
+    });
 });  
