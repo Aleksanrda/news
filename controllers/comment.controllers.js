@@ -1,4 +1,4 @@
-const { addComment, fetchArticleComments } = require("../models/comment.models.js");
+const { addComment, fetchArticleComments, removeComment } = require("../models/comment.models.js");
 const { getUser } = require("../models/user.models");
 const { fetchArticleById } = require("../models/article.models");
 
@@ -29,4 +29,14 @@ const postArticleComment = (request, response, next) => {
         .catch(next);
 };
 
-module.exports = { getArticleComments, postArticleComment};
+const deleteComment = (request, response, next) => {
+    const { comment_id } = request.params;
+
+    removeComment(comment_id)
+        .then(() => {
+            return response.status(204).send();
+        })
+        .catch(next);
+}
+
+module.exports = { getArticleComments, postArticleComment, deleteComment};
