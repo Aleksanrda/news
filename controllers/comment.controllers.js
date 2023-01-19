@@ -1,5 +1,6 @@
-const { fetchArticleComments } = require("../models/comment.models.js");
-const { fetchArticleById } = require("../models/article.models.js");
+const { addComment, fetchArticleComments } = require("../models/comment.models.js");
+const { getUser } = require("../models/user.models");
+const { fetchArticleById } = require("../models/article.models");
 
 const getArticleComments = (request, response, next) => {
     const { article_id } = request.params;
@@ -11,4 +12,21 @@ const getArticleComments = (request, response, next) => {
         .catch(next);
 };
 
-module.exports = { getArticleComments };
+const postArticleComment = (request, response, next) => {
+    const { article_id } = request.params;
+    const comment = request.body;
+
+    fetchArticleById(article_id)
+        .then(() => {
+            return getUser(comment.username);
+        })
+        .then(() => {
+            return addComment(article_id, comment);
+        })
+        .then((comment) => {
+            return response.status(201).send({ comment });
+        })
+        .catch(next);
+};
+
+module.exports = { getArticleComments, postArticleComment};

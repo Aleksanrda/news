@@ -39,6 +39,7 @@ const fetchArticleById = (article_id) => {
             return rows[0];
         }
     });
-};
+  };
+
 
 module.exports = { fetchArticles, fetchArticleById };
