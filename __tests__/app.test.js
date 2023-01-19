@@ -182,7 +182,6 @@ describe('API', () => {
     });
     
     describe('/API/ARTICLES/:ARTICLE_ID/COMMENTS', () => {
-
         test('Status 200 - api point exists and responds', () => {
             return request(app).get("/api/articles/1/comments").expect(200);
         });
@@ -196,7 +195,6 @@ describe('API', () => {
                     expect(body.comments).toBeInstanceOf(Array);
                 });
         });
-
         test('Status 200 - returns back an array of objects with the correct keys', () => {
             return request(app)
                 .get("/api/articles/1/comments")
@@ -383,4 +381,3 @@ describe('API', () => {
         });
     });
 });
-});  
