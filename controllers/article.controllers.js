@@ -1,7 +1,9 @@
 const { fetchArticles, fetchArticleById } = require("../models/article.models"); 
 
 const getArticles = (request, response, next) => {
-    fetchArticles()
+    const { topic, sort_by, order } = request.query;
+
+    fetchArticles(topic, sort_by, order)
         .then(({ rows: results}) => {
             response.status(200).send({ articles: results });
         })
