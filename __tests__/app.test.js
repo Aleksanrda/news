@@ -144,6 +144,7 @@ describe('API', () => {
                     expect(article).toHaveProperty("created_at", expect.any(String));
                     expect(article).toHaveProperty("votes", expect.any(Number));
                     expect(article).toHaveProperty("article_img_url", expect.any(String));
+                    expect(article).toHaveProperty("comment_count", expect.any(String));
                 });
         });
         test('Status 200 - returns back existing article with index 1', () => {
@@ -161,6 +162,25 @@ describe('API', () => {
                     expect(article.created_at).toBe("2020-07-09T20:11:00.000Z");
                     expect(article.votes).toBe(100);
                     expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+                    expect(article.comment_count).toBe("11");
+                })
+        });
+        test('Status 200 - returns back existing article with index 2 and comment_count 0', () => {
+            return request(app)
+                .get("/api/articles/2")
+                .expect(200)
+                .then(({ body }) => {
+                    const article = body.article;
+
+                    expect(article.article_id).toBe(2);
+                    expect(article.title).toBe("Sony Vaio; or, The Laptop");
+                    expect(article.topic).toBe("mitch");
+                    expect(article.author).toBe("icellusedkars");
+                    expect(article.body).toBe("Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.");
+                    expect(article.created_at).toBe("2020-10-16T05:03:00.000Z");
+                    expect(article.votes).toBe(0);
+                    expect(article.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+                    expect(article.comment_count).toBe("0");
                 })
         });
         test('Status 404 - returns back an error Article Not Found', () => {

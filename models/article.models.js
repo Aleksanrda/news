@@ -24,9 +24,12 @@ const fetchArticleById = (article_id) => {
     }
 
     const selectArticleById = `
-        SELECT * 
-        FROM articles 
-        WHERE article_id = $1;
+        SELECT A.*,  COUNT(C.article_id) AS comment_count 
+        FROM articles A 
+        LEFT JOIN comments C 
+        ON C.article_id = A.article_id 
+        WHERE A.article_id = $1 
+        GROUP BY A.article_id;
         `;
 
     return db.query(selectArticleById, [article_id])
