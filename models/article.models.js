@@ -2,13 +2,13 @@ const db = require("../db/connection");
 
 const fetchArticles = () => {
     const selectArticlesQuery = `
-        SELECT A.author, A.title, A.article_id, A.topic, A.created_at,
-        A.votes, A.article_img_url, COUNT(C.article_id) AS comment_count
-        FROM articles A
-        LEFT JOIN comments C
-        ON C.article_id = A.article_id 
-        GROUP BY A.article_id 
-        ORDER BY A.created_at DESC;`;
+        SELECT a.author, a.title, a.article_id, a.topic, a.created_at,
+        a.votes, a.article_img_url, COUNT(c.article_id) AS comment_count
+        FROM articles a
+        LEFT JOIN comments c
+        ON c.article_id = a.article_id 
+        GROUP BY a.article_id 
+        ORDER BY a.created_at DESC;`;
 
     return db.query(selectArticlesQuery)
         .then((results) => {
@@ -24,12 +24,12 @@ const fetchArticleById = (article_id) => {
     }
 
     const selectArticleById = `
-        SELECT A.*,  COUNT(C.article_id) AS comment_count 
-        FROM articles A 
-        LEFT JOIN comments C 
-        ON C.article_id = A.article_id 
-        WHERE A.article_id = $1 
-        GROUP BY A.article_id;
+        SELECT a.*,  COUNT(C.article_id) AS comment_count 
+        FROM articles a 
+        LEFT JOIN comments c 
+        ON c.article_id = a.article_id 
+        WHERE a.article_id = $1 
+        GROUP BY a.article_id;
         `;
 
     return db.query(selectArticleById, [article_id])
