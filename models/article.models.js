@@ -14,17 +14,17 @@ const fetchArticles = (topic, sort_by, order) => {
     }
 
     let selectArticlesQuery = `
-        SELECT A.author, A.title, A.article_id, A.topic, A.created_at,
-        A.votes, A.article_img_url, COUNT(C.article_id) AS comment_count
-        FROM articles A
-        LEFT JOIN comments C
-        ON C.article_id = A.article_id`;
+        SELECT a.author, a.title, a.article_id, a.topic, a.created_at,
+        a.votes, a.article_img_url, COUNT(c.article_id) AS comment_count
+        FROM articles a
+        LEFT JOIN comments c
+        ON c.article_id = a.article_id`;
 
     if (topic) {
-        selectArticlesQuery += ` WHERE A.topic = '${topic}'`;
+        selectArticlesQuery += ` WHERE a.topic = '${topic}'`;
     }
 
-    selectArticlesQuery += ` GROUP BY A.article_id ORDER BY A.${sortOption} ${currentOrder};`;
+    selectArticlesQuery += ` GROUP BY a.article_id ORDER BY a.${sortOption} ${currentOrder};`;
 
     return db.query(selectArticlesQuery)
         .then(({ rowCount, rows }) => {
@@ -46,9 +46,12 @@ const fetchArticleById = (article_id) => {
     }
 
     const selectArticleById = `
-        SELECT * 
-        FROM articles 
-        WHERE article_id = $1;
+        SELECT a.*,  COUNT(C.article_id) AS comment_count 
+        FROM articles a 
+        LEFT JOIN comments c 
+        ON c.article_id = a.article_id 
+        WHERE a.article_id = $1 
+        GROUP BY a.article_id;
         `;
 
     return db.query(selectArticleById, [article_id])
