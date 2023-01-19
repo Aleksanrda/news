@@ -270,4 +270,58 @@ describe('API', () => {
             })
         });
     });
+
+    describe('GET /API/USERS', () => {
+        test('Status 200 - api point exists and responds', () => {
+            return request(app).get("/api/users").expect(200);
+        });
+        test('Status 200 - returns back an object and has a property called users', () => {
+            return request(app)
+                .get("/api/users")
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body).toBeInstanceOf(Object);
+                    expect(body).toHaveProperty("users");
+                    expect(body.users).toBeInstanceOf(Array);
+                });
+        });
+        test('Status 200 - returns back an array of objects with the correct keys', () => {
+            return request(app)
+                .get("/api/users")
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.users).toHaveLength(testData.userData.length);
+                    
+                    body.users.forEach( user => {
+                        expect(user).toEqual(
+                            expect.objectContaining({
+                                username: user.username,
+                                name: user.name,
+                                avatar_url: user.avatar_url,
+                            })
+                        )
+                    });
+                });
+        });
+        test('Status 200 - returns back an array of users from DB', () => {
+            return request(app)
+                .get("/api/users")
+                .expect(200)
+                .then(({ body }) => {
+                    const topUser = body.users[0];
+                
+                    expect(topUser.username).toBe("butter_bridge");
+                    expect(topUser.name).toBe("jonny");
+                    expect(topUser.avatar_url).toBe("https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg");
+            });
+        });
+        test('Status 404 - returns back error Path not found', () => {
+            return request(app)
+                .get("/api/userss")
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Path not found");
+                });
+        });
+    });
 });  
