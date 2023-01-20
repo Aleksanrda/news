@@ -657,6 +657,35 @@ describe('API', () => {
                 .expect(400)
                 .then(({ body }) => {
                     expect(body.msg).toBe("You passed notAnId. Comment id should be a number.");
+
+    describe('GET /API', () => {
+        test('Status 200 - api point exists and returns', () => {
+            return request(app)
+                .get("/api")
+                .expect(200);
+        });
+        test('Status 200 - retuns back all existing endpoints', () => {
+            return request(app)
+                .get("/api")
+                .expect(200)
+                .then(({ body }) => {
+                    const { endpoints } = body;
+
+                    expect(endpoints).toHaveProperty("GET /api");
+                    expect(endpoints).toHaveProperty("GET /api/topics");
+                    expect(endpoints).toHaveProperty("GET /api/articles");
+                    expect(endpoints).toHaveProperty("GET /api/articles/:article_id");
+                    expect(endpoints).toHaveProperty("GET /api/articles/:article_id/comments");
+                    expect(endpoints).toHaveProperty("POST /api/articles/:article_id/comments");
+                    expect(endpoints).toHaveProperty("PATCH /api/articles/:article_id");
+                    expect(endpoints).toHaveProperty("GET /api/users");
+                    expect(endpoints).toHaveProperty("DELETE /api/comments/:comment_id");
+
+                    for (const key in endpoints) {
+                        expect(endpoints[key]).toHaveProperty("description");
+                        expect(endpoints[key]).toHaveProperty("exampleResponse");
+                        expect(endpoints[key]).toHaveProperty("queries");
+                    }
                 })
         });
     });
