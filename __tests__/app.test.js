@@ -657,6 +657,9 @@ describe('API', () => {
                 .expect(400)
                 .then(({ body }) => {
                     expect(body.msg).toBe("You passed notAnId. Comment id should be a number.");
+                });
+        });
+    });
 
     describe('GET /API', () => {
         test('Status 200 - api point exists and returns', () => {
