@@ -3,7 +3,7 @@ const app = express();
 
 const { getTopics } = require("./controllers/topic.controllers.js");
 const { getArticles, getArticleById, patchArticle} = require("./controllers/article.controllers.js");
-const { getArticleComments, postArticleComment } = require("./controllers/comment.controllers.js");
+const { getArticleComments, postArticleComment, deleteComment } = require("./controllers/comment.controllers.js");
 const { getUsers } = require("./controllers/user.controllers.js");
 const { getEndpoints } = require("./controllers/endpoint.controllers.js");
 
@@ -21,7 +21,7 @@ app.post("/api/articles/:article_id/comments", postArticleComment);
 
 app.patch("/api/articles/:article_id", patchArticle);
 
-
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((req, res, next) => {
     res.status(404).send({ msg: "Path not found" });

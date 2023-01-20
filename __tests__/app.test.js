@@ -619,6 +619,45 @@ describe('API', () => {
         });
     });
 
+    describe('DELETE /API/COMMENTS/:COMMENT_ID', () => {
+        test('Status 204 - api point exists and returns', () => {
+            return request(app)
+                .delete("/api/comments/1")
+                .expect(204);
+        });
+        test('Status 204 - response should be undefined', () => {
+            return request(app)
+                .delete("/api/comments/1")
+                .then(({ body }) => {
+                    expect(body).toEqual({});
+                })
+        });
+        test('Status 204 - comment with id 1 should be removed from DB', () => {
+            return request(app)
+                .delete("/api/comments/1")
+                .expect(204)
+                .then(() => {
+                    return db.query('SELECT * FROM comments WHERE comment_id = 1;')
+                        .then(({ rowCount }) => {
+                            expect(rowCount).toBe(0);
+                        });
+                })
+        });
+        test('Status 404 - returns back an error when Comment does not exist in DB', () => {
+            return request(app)
+                .delete("/api/comments/1000")
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Comment with id 1000 does not exist in DB");
+                })
+        });
+        test('Status 400 - returns back an error Invalid input when Comment ID does not have exist', () => {
+            return request(app)
+                .delete("/api/comments/notAnId")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("You passed notAnId. Comment id should be a number.");
+
     describe('GET /API', () => {
         test('Status 200 - api point exists and returns', () => {
             return request(app)
