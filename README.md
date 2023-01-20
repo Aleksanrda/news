@@ -33,6 +33,21 @@ The back-end component currently consists of the following ennpoints::
 
     .env.test
 
+- check if the following dependencies exist in package.json file:
+
+    1) dotenv
+    2) express
+    3) pg
+    4) pg-format
+
+-check if the following devDependencies exist in package.json file:
+
+    1) husky
+    2) jest
+    3) jest-extended
+    4) jest-sorted
+    5) supertest
+    
 - run all scripts stored in package.json file
 
 - run tests => use npm test app.test.js command
