@@ -1,16 +1,44 @@
-# Northcoders News API
+# News
 
-## Background
+## 1. Link to the app
 
-We will be building an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
+https://news-1a1w.onrender.com
 
-Your database will be PSQL, and you will interact with it using [node-postgres](https://node-postgres.com/).
+## 2. Background:
 
-## In order to successfully connect to the two databases locally add two next files:
+The news programme allows you to browse articles, post and delete comments, search for users and topics, select articles based on topics, and sort articles.
 
-.env.development
+The back-end component currently consists of the following ennpoints::
+ 
+- GET /api
+- GET /api/topics
+- GET /api articles
+- GET /api/articles/:article_id
+- GET /api/articles/:article_id/comments
+- GET /api/users
+- GET /api/articles (queries: topic, sort_by, order)
+- POST /api/articles/:article_id/comments
+- PATCH /api/articles/:article_id
+- DELETE /api/comments/:comment_id
 
-.env.test
+## 3. Instructions:
 
-### Into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (see `/db/setup.sql` for the database names).
+- to your github account fork the repo https://github.com/Aleksanrda/news.git
 
+- copy the link of created repo and clone it in the terminal
+
+- in order to successfully connect to the two databases locally add two next files and into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (the database names can be found in "/db/setup.sql):
+
+    .env.development
+
+    .env.test
+
+- run all scripts stored in package.json file
+
+- run tests => use npm test app.test.js command
+
+## 4. Minimum versions needed to run the project:
+
+ - Node.js v19.1.0
+
+ - Postgres 14.5
